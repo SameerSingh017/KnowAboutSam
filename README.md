@@ -32,7 +32,9 @@ portfolio/
 ├── styles.css          # Core styles (original)
 ├── extra.css           # Extended styles for new pages
 ├── script.js           # JavaScript — nav, Firebase CMS, interactions
-│
+├── assistant.js        # "Private" — AI portfolio assistant widget (self-contained)
+├── assistant-data.json # Knowledge base powering Private (bio, skills, projects, DSA progress)
+|
 ├── assets/
 │   ├── hero-headshot.png       # Hero section profile photo
 │   ├── 1000031928.jpeg         # About page photo
@@ -79,6 +81,16 @@ Thoughts and Posts are stored in **Firebase Firestore** and rendered in real tim
 
 ### Contact Page
 Direct links to Email, LinkedIn, and Telegram with animated hover cards and a live availability indicator (green pulse dot).
+
+### Private — AI Portfolio Assistant
+A floating chat assistant ("Ask Private" button, bottom-left, on every page) that answers visitor questions about Sameer — background, AWS internship, skills, projects (filterable by language, e.g. "show Java projects"), DSA progress, and contact info.
+
+- **Fully self-contained** — `assistant.js` injects its own UI and styles, no build step or dependencies.
+- **Knowledge base** — reads from `assistant-data.json`, which you edit directly (no code changes needed to update content).
+- **Live GitHub check** — for project questions, it also queries the public GitHub API (`api.github.com/users/SameerSingh017/repos`) to surface any repos not yet featured in `assistant-data.json`, cached in `sessionStorage` for 10 minutes to avoid rate limits.
+- **DSA progress is manual** — edit the numbers in `assistant-data.json` → `dsa_progress` whenever your solve count changes. See `SETUP_GUIDE.md` for exact steps.
+- **No API key, no backend, no cost** — it's a rule-based assistant, not a live LLM call, so there's nothing to secure or pay for. See `SETUP_GUIDE.md` for how to optionally upgrade it to a real LLM-powered assistant later.
+
 
 ---
 

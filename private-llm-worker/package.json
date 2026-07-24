@@ -1,0 +1,13 @@
+{
+  "name": "private-llm-worker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cloudflare Worker that powers Private's optional real-LLM mode via Google Gemini's free tier.",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}

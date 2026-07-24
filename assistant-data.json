@@ -1,0 +1,132 @@
+{
+  "name": "Sameer Singh",
+  "github_username": "SameerSingh017",
+  "status": "3rd Year, 6th Semester — B.Tech Computer Science & Engineering @ Galgotias University",
+  "location": "Greater Noida, India",
+  "born": "7 February 2006",
+  "age": "20 (as of July 2026 — update yearly in assistant-data.json)",
+  "profession": "Full-Stack Software Engineering student, building web applications and practicing DSA alongside his degree.",
+  "bio": [
+    "Driven Full-Stack Software Engineer with a decent foundation in Data Structures and Algorithms.",
+    "Completed a Data Engineering virtual internship (AWS Academy), gaining hands-on practical experience with data processing and cloud infrastructure.",
+    "Passionate about problem-solving, with consistent practice on coding platforms.",
+    "Also an aspiring author, currently working on a novel centered around self-discovery and philosophy."
+  ],
+
+  "education": [
+    {
+      "degree": "B.Tech — Computer Science & Engineering",
+      "institution": "Galgotias University, Greater Noida",
+      "duration": "2023 — 2027",
+      "score": "CGPA: 8.2"
+    },
+    {
+      "degree": "Senior Secondary (XII) — PCM",
+      "institution": "St. Xaviers High School, Azamgarh",
+      "duration": "2023",
+      "score": "88.8%"
+    },
+    {
+      "degree": "High School (X)",
+      "institution": "Krishna Sudarshan Public School, Patna",
+      "duration": "2021",
+      "score": "75%"
+    }
+  ],
+
+  "internship": {
+    "title": "Data Engineering Virtual Internship",
+    "organization": "AWS Academy · via EduSkills",
+    "summary": "A structured virtual internship covering end-to-end data engineering and cloud infrastructure fundamentals using AWS — bridging classroom theory with real-world system design.",
+    "highlights": [
+      "Data Pipelines & ETL — designed and understood data ingestion, transformation, and storage workflows, applying Extract–Transform–Load patterns and data-cleaning techniques.",
+      "AWS Core Services — hands-on with Amazon S3, EC2, Lambda (serverless), and RDS, applying scalability, high availability, fault tolerance, and cost optimisation.",
+      "Cloud Networking — VPC architecture, routing, secure service communication, subnetting and supernetting for IP allocation and traffic control.",
+      "IAM & Access Control — implemented Identity and Access Management to enforce secure authentication and role-based authorisation across cloud services."
+    ],
+    "tools": ["Amazon S3", "Amazon EC2", "AWS Lambda", "Amazon RDS", "IAM", "VPC", "AWS Cloud Foundations"]
+  },
+
+  "skills": {
+    "languages": ["Java", "Python (Basic)", "HTML", "CSS", "JavaScript", "SQL"],
+    "frameworks": ["React", "Tailwind CSS", "Jakarta EE"],
+    "databases": ["MySQL"],
+    "cloud": ["AWS (S3, EC2, IAM)", "Netlify"],
+    "tools": ["Git", "VS Code", "MySQL Workbench", "Microsoft Excel", "Apache Tomcat", "Tableau"],
+    "soft_skills": ["Teamwork", "Communication", "Problem Solving", "Adaptability"]
+  },
+
+  "projects": [
+    {
+      "name": "ElementalUI",
+      "description": "A visually engaging and fully searchable periodic table. Click any element to view detailed properties, filter by category, and explore the building blocks of matter.",
+      "tags": ["HTML", "CSS", "JavaScript"],
+      "github": "https://github.com/SameerSingh017/periodic_table",
+      "deployment": "Frontend → Netlify",
+      "featured": false
+    },
+    {
+      "name": "Library Management System",
+      "description": "A terminal and MySQL Workbench based system to manage library operations — book records, reader records, employee records, issuing and returning books, view issue history — built with JDBC connectivity.",
+      "tags": ["Java", "JDBC", "MySQL", "MySQL Workbench"],
+      "github": "https://github.com/SameerSingh017/Library-DB",
+      "deployment": null,
+      "featured": false
+    },
+    {
+      "name": "Bibliogram",
+      "description": "A full-stack Library Management System with role-based authentication for Admin, Member, and Reader. Features book catalog management, issue/return workflows with automated fine calculation, and separate dashboards per role.",
+      "tags": ["Java", "Servlets", "JDBC", "MySQL", "HTML", "CSS", "JavaScript", "Maven", "Tomcat 11"],
+      "github": "https://github.com/SameerSingh017/Bibliogram",
+      "deployment": "Local · Apache Tomcat 11, DB · MySQL Workbench",
+      "featured": true
+    }
+    ,
+    {
+      "name": "LeafScan",
+      "description": "A crop disease detection and fertilizer recommendation system. Farmers upload a leaf photo, a fine-tuned EfficientNetB0 model identifies the disease, and a rule-based engine returns fertilizer, fungicide, organic alternatives, and recovery time — with full detection history saved per user.",
+      "tags": ["React", "Tailwind CSS", "FastAPI", "TensorFlow", "MongoDB"],
+      "github": "https://github.com/sameersingh187/LeafScan",
+      "deployment": "Frontend → Vercel, Backend → Render, DB → MongoDB Atlas",
+      "featured": true
+}
+  ],
+
+  "dsa_progress": {
+    "_instructions": "This section is updated MANUALLY. Edit the numbers below whenever your solve count changes — see SETUP_GUIDE.md, section 'Updating DSA Progress'. No code changes needed, just numbers.",
+    "last_updated": "July 2026",
+    "total_solved": 302,
+    "platform": "LeetCode",
+    "profile_url": "https://leetcode.com/u/SameerSingh17/",
+    "topics": {
+      "Arrays": 160,
+      "Strings": 68,
+      "Linked List": 13,
+      "Stacks & Queues": 14,
+      "Trees": 22,
+      "Graphs": 41,
+      "Dynamic Programming": 32,
+      "Recursion & Backtracking": 15,
+      "Greedy": 18,
+      "Sorting & Searching": 39
+    }
+  },
+
+"seed_posts": [
+    { "tag": "Dev", "date": "May 2026", "body": "Stopped overwhelming myself with learning too many tech stacks. Now I tend be skilled at whatever stack I'm comfortable with." },
+    { "tag": "Life", "date": "Apr 2026", "body": "To see what's in front of ones's nose requires a constant struggle - George Orwell" },
+    { "tag": "Reading", "date": "Apr 2026", "body": "Started writing my novel again after a two-month gap. Turns out the characters were just waiting — they hadn't gone anywhere." }
+  ],
+
+  "seed_thoughts": [
+    { "title": "The Quiet Cost of Always Being Productive", "subtitle": "On why doing nothing might be the most honest thing you can do.", "tag": "Philosophy", "date": "May 2026" }
+  ],
+
+  "contact": {
+    "email": "sameer0555singh@gmail.com",
+    "linkedin": "https://linkedin.com/in/sameer-singh-004a9929a",
+    "telegram": "https://t.me/localculprit",
+    "github": "https://github.com/SameerSingh017",
+    "resume": "assets/ss_resume.pdf"
+  }
+}

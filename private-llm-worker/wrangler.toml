@@ -1,0 +1,9 @@
+name = "private-llm-worker"
+main = "src/index.js"
+compatibility_date = "2026-01-01"
+
+[ai]
+binding = "AI"
+
+# GEMINI_API_KEY is NOT set here — it's stored as an encrypted secret.
+# Set it with:  wrangler secret put GEMINI_API_KEY

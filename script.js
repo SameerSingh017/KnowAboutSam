@@ -51,6 +51,7 @@ if (scrollIndicator) {
 }
 
 
+
 const ADMIN_KEY = 'ss_admin_v1';
 const ADMIN_PASS = 'sameer2006'; 
 
@@ -125,29 +126,36 @@ window.publishThought = async function () {
     if (!title || !body) { alert('Title and body are required.'); return; }
 
     const btn = document.querySelector('#adminBar .admin-publish');
-    if (btn) { btn.textContent = 'Publishing...'; btn.disabled = true; }
+    if (btn) { btn.textContent = editingThoughtId ? 'Updating...' : 'Publishing...'; btn.disabled = true; }
 
     try {
-        await addDoc(collection(db, 'thoughts'), {
-            title,
-            subtitle: subtitle || '',
-            body,
-            date: new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
-            tag: 'Personal',
-            createdAt: Date.now()
-        });
+        if (editingThoughtId) {
+            await updateDoc(doc(db, 'thoughts', editingThoughtId), { title, subtitle: subtitle || '', body });
+            showToast('Thought updated ✓');
+        } else {
+            await addDoc(collection(db, 'thoughts'), {
+                title,
+                subtitle: subtitle || '',
+                body,
+                date: new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
+                tag: 'Personal',
+                createdAt: Date.now()
+            });
+            showToast('Thought published ✓');
+        }
+        editingThoughtId = null;
         document.getElementById('thoughtTitle').value = '';
         document.getElementById('thoughtSubtitle').value = '';
         document.getElementById('thoughtBody').value = '';
         closeAdmin();
-        showToast('Thought published ✓');
     } catch (e) {
         console.error(e);
-        alert('Failed to publish. Check Firebase console → Firestore rules.');
+        alert('Failed to save. Check Firebase console → Firestore rules.');
     } finally {
         if (btn) { btn.textContent = 'PUBLISH'; btn.disabled = false; }
     }
 };
+
 
 window.deleteThought = async function (id) {
     if (!confirm('Delete this thought?')) return;
@@ -225,26 +233,33 @@ window.publishPost = async function () {
     if (!body) { alert('Post body cannot be empty.'); return; }
 
     const btn = document.querySelector('#adminBar .admin-publish');
-    if (btn) { btn.textContent = 'Posting...'; btn.disabled = true; }
+    if (btn) { btn.textContent = editingPostId ? 'Updating...' : 'Posting...'; btn.disabled = true; }
 
     try {
-        await addDoc(collection(db, 'posts'), {
-            tag,
-            body,
-            date: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
-            createdAt: Date.now()
-        });
+        if (editingPostId) {
+            await updateDoc(doc(db, 'posts', editingPostId), { tag, body });
+            showToast('Post updated ✓');
+        } else {
+            await addDoc(collection(db, 'posts'), {
+                tag,
+                body,
+                date: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+                createdAt: Date.now()
+            });
+            showToast('Post published ✓');
+        }
+        editingPostId = null;
         document.getElementById('postTag').value = '';
         document.getElementById('postBody').value = '';
         closeAdmin();
-        showToast('Post published ✓');
     } catch (e) {
         console.error(e);
-        alert('Failed to publish. Check Firebase console → Firestore rules.');
+        alert('Failed to save. Check Firebase console → Firestore rules.');
     } finally {
         if (btn) { btn.textContent = 'POST'; btn.disabled = false; }
     }
 };
+
 
 window.deletePost = async function (id) {
     if (!confirm('Delete this post?')) return;

@@ -26,6 +26,7 @@ portfolio/
 ├── index.html            # Home page
 ├── about.html             # About page — skills & certifications render dynamically here
 ├── projects.html
+|---coding.html
 ├── thoughts.html            # Thoughts page (Firebase-powered)
 ├── posts.html                 # Posts page (Firebase-powered)
 ├── contact.html
@@ -43,6 +44,7 @@ portfolio/
 │   ├── hero-headshot.png
 │   ├── 1000031928.jpeg
 │   └── ss_resume.pdf
+|   |-- leafscan-screenshot.png
 │
 ├── private-llm-worker/               # Cloudflare Worker — admin auth, Firestore write proxy, LLM fallback
 │   ├── src/index.js

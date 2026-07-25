@@ -177,34 +177,39 @@
     `;
   }
  
-  function buildInternshipAnswer(concise) {
-    const i = KB.internship;
-    if (concise) {
-      const shortPoints = i.highlights.map(h => h.split(" — ")[0]);
-      return `
-        <p><strong>${escapeHtml(i.title)}</strong> — key takeaways:</p>
-        <ul class="priv-list">
-          ${shortPoints.map(p => `<li><strong>${escapeHtml(p)}</strong></li>`).join("")}
-        </ul>
-        <p class="priv-tags">${i.tools.map(t => `<span class="priv-tag">${escapeHtml(t)}</span>`).join("")}</p>
-        <p class="priv-hint">Ask for "internship details" for the full breakdown.</p>
-      `;
-    }
+ function buildInternshipAnswer(concise) {
+  const i = KB.internship;
+  if (concise) {
+    const shortPoints = i.highlights.map(h => h.split(" — ")[0]);
     return `
-      <p><strong>${escapeHtml(i.title)}</strong><br><span class="priv-muted">${escapeHtml(i.organization)}</span></p>
-      <p>${escapeHtml(i.summary)}</p>
+      <p><strong>${escapeHtml(i.title)}</strong> (${escapeHtml(i.duration)}) — key takeaways:</p>
       <ul class="priv-list">
-        ${i.highlights.map(h => `<li>${escapeHtml(h)}</li>`).join("")}
+        ${shortPoints.map(p => `<li><strong>${escapeHtml(p)}</strong></li>`).join("")}
       </ul>
       <p class="priv-tags">${i.tools.map(t => `<span class="priv-tag">${escapeHtml(t)}</span>`).join("")}</p>
+      <p class="priv-hint">Ask for "internship details" for the full breakdown.</p>
     `;
   }
+  return `
+    <p>
+      <strong>${escapeHtml(i.title)}</strong><br>
+      <span class="priv-muted">${escapeHtml(i.organization)} · ${escapeHtml(i.duration)}</span>
+    </p>
+    <p>${escapeHtml(i.summary)}</p>
+    <ul class="priv-list">
+      ${i.highlights.map(h => `<li>${escapeHtml(h)}</li>`).join("")}
+    </ul>
+    <p class="priv-tags">${i.tools.map(t => `<span class="priv-tag">${escapeHtml(t)}</span>`).join("")}</p>
+  `;
+}
  
   function extractSkillCategory(msg) {
     if (/\bfront[\s-]?end\b/.test(msg)) return "frontend";
     if (/\bback[\s-]?end\b/.test(msg)) return "backend";
     if (/\bmachine learning\b|\bml\b|\bai\b/.test(msg)) return "machine_learning";
     if (/\bdatabase(s)?\b/.test(msg)) return "database";
+    if (/\bcloud\b/.test(msg)) return "clodep";
+    if (/\bdeployment\b/.test(msg)) return "clodep";
     if (/\bsoft skills?\b/.test(msg)) return "soft";
     if (/\btools?\b/.test(msg)) return "tools";
     return null;
@@ -221,6 +226,7 @@
     if (category === "backend") return `<p>Sameer's backend skills:</p>${tagsHtml(s.backend)}`;
     if (category === "machine_learning") return `<p>Sameer's machine learning skills:</p>${tagsHtml(s.machine_learning)}`;
     if (category === "database") return `<p>Sameer's database skills:</p>${tagsHtml(s.databases)}`;
+    if (category === "clodep") return `<p>Sameer's cloud and deployment skills:</p>${tagsHtml(s.clodep)}`;
     if (category === "soft") return `<p>Sameer's soft skills:</p>${tagsHtml(s.soft_skills)}`;
     if (category === "tools") return `<p>Sameer's tools:</p>${tagsHtml(s.tools)}`;
  
@@ -242,6 +248,7 @@
       ["Frontend", s.frontend],
       ["Backend", s.backend],
       ["Databases", s.databases],
+      ["Cloud & Deployment", s.clodep],
       ["Tools", s.tools],
       ["Soft Skills", s.soft_skills]
     ];

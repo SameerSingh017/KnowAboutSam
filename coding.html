@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thoughts | Sameer Singh</title>
+    <title>Coding | Sameer Singh</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -16,8 +16,8 @@
         <ul class="nav-links" id="nav-links">
             <li><a href="about.html">ABOUT</a></li>
             <li><a href="projects.html">PROJECTS</a></li>
-            <li><a href="coding.html">CODING</a></li>
-            <li><a href="thoughts.html" class="active">THOUGHTS</a></li>
+            <li><a href="coding.html" class="active">CODING</a></li>
+            <li><a href="thoughts.html">THOUGHTS</a></li>
             <li><a href="posts.html">POSTS</a></li>
             <li><a href="contact.html">CONTACT</a></li>
         </ul>
@@ -25,53 +25,19 @@
 
     <main class="page-container">
         <div class="page-header">
-            <p class="page-eyebrow">— LONGER READS</p>
-            <h1 class="page-title">Thoughts</h1>
-            <p class="page-subtitle">Essays, reflections, and ideas I find worth writing out.</p>
+            <p class="page-eyebrow">— COMPETITIVE PROGRAMMING</p>
+            <h1 class="page-title">Coding</h1>
+            <p class="page-subtitle">Contests, problems solved, and badges across the platforms Sameer practices on.</p>
         </div>
 
-        <div class="admin-bar" id="adminBar" style="display:none;">
-            <div class="admin-compose">
-                <h3>New Thought</h3>
-                <input type="text" id="thoughtTitle" placeholder="Title..." class="admin-input" />
-                <input type="text" id="thoughtSubtitle" placeholder="Subtitle / one-liner..." class="admin-input" />
-                <textarea id="thoughtBody" placeholder="Write your thought here... Supports line breaks." class="admin-textarea" rows="8"></textarea>
-                <div class="admin-actions">
-                    <button class="btn-more admin-publish" onclick="publishThought()">PUBLISH</button>
-                    <button class="btn-more admin-cancel" onclick="closeAdmin()">CANCEL</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="thoughts-feed" id="thoughtsFeed">
-            <article class="thought-card" data-id="seed-1">
-                <div class="thought-header">
-                    <span class="thought-date">May 2026</span>
-                    <span class="thought-tag">Philosophy</span>
-                </div>
-                <h2 class="thought-title">The Quiet Cost of Always Being Productive</h2>
-                <p class="thought-subtitle">On why doing nothing might be the most honest thing you can do.</p>
-                <div class="thought-body collapsed" id="body-seed-1">
-                    <p>There is a particular kind of exhaustion that doesn't come from working too hard. It comes from never allowing yourself to stop. Modern productivity culture has convinced an entire generation that rest is laziness in disguise — that if you're not optimizing some corner of your life, you're falling behind.</p>
-                    <p>I've felt this myself. The guilt of reading a novel instead of a technical article. The creeping anxiety of a Sunday afternoon with nothing scheduled. Somewhere along the way, my sense of worth got tangled up with my output.</p>
-                    <p>But I'm starting to think the most important things I've learned didn't happen at my desk. They happened on long walks, in half-asleep conversations, in the quiet moments when my mind was allowed to wander without destination. Boredom, it turns out, is where ideas actually form.</p>
-                    <p>The soul of creativity isn't hustle. It's spaciousness.</p>
-                </div>
-                <button class="read-toggle" onclick="toggleThought('seed-1')">Read more ↓</button>
-                <div class="thought-delete admin-only" style="display:none;" onclick="deleteThought('seed-1')">✕ delete</div>
-            </article>
-        </div>
-
-        <div class="thoughts-empty" id="thoughtsEmpty" style="display:none;">
-            <p>No thoughts yet. Check back soon.</p>
+        <div class="coding-platforms" id="codingPlatforms">
+            <!-- populated dynamically from assistant-data.json via script.js -->
         </div>
     </main>
 
-    <button class="secret-admin-btn" id="secretBtn" onclick="promptAdmin()" title="Admin">✦</button>
-
     <footer class="about-footer-nav">
-        <a href="coding.html">← Coding</a>
-        <a href="posts.html">Posts →</a>
+        <a href="projects.html">← Projects</a>
+        <a href="thoughts.html">Thoughts →</a>
     </footer>
 
     <footer class="footer">
@@ -103,9 +69,9 @@
             </div>
         </div>
         <p class="copyright">© designed & built by Sameer Singh :)</p>
-    </footer> 
+    </footer>
 
     <script src="script.js" type="module"></script>
-    \<script src="assistant.js" defer></script>
+    <script src="assistant.js" defer></script>
 </body>
 </html>

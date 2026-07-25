@@ -13,10 +13,33 @@
 const OFF_TOPIC_PATTERN =
   /\b(girlfriend|boyfriend|wife|husband|dating|relationship status|married|siblings?|brother|sister|religion|caste|political|salary|income|net worth|weight|height|book(s)? (is|are) (he|sameer) reading|currently reading)\b/;
  
+const CODING_TRIGGER =
+  /\bcodechef\b|\brating\b|\bcontest(s)?\b|\bbadges?\b|\bcoding profile(s)?\b|\bcompetitive programming profile(s)?\b|\bcoding stats?\b|\bcoding page\b/;
+ 
+function extractCodingPlatform(msg) {
+  if (/\bleetcode\b/.test(msg)) return "leetcode";
+  if (/\bgfg\b|\bgeeksforgeeks\b/.test(msg)) return "gfg";
+  if (/\bcodechef\b/.test(msg)) return "codechef";
+  return null;
+}
+ 
+function extractCodingStat(msg) {
+  if (/\brating\b/.test(msg)) return "rating";
+  if (/\bcontest(s)?\b/.test(msg)) return "contests";
+  if (/\bbadges?\b/.test(msg)) return "badges";
+  if (/\bproblems?( solved)?\b/.test(msg)) return "problems";
+  return null;
+}
+ 
 function route(msgRaw) {
   const msg = msgRaw.toLowerCase().trim();
  
   if (OFF_TOPIC_PATTERN.test(msg)) return "OFF_TOPIC";
+  if (CODING_TRIGGER.test(msg)) {
+    const platform = extractCodingPlatform(msg);
+    const stat = extractCodingStat(msg);
+    return `CODING(${platform || "all"},${stat || "overview"})`;
+  }
   if (/\b(dsa|leetcode|gfg|geeksforgeeks|data structures?|problems? solved|competitive programming)\b/.test(msg))
     return "DSA";
   if (/\b(intern(ship)?|aws academy|eduskills|data engineering)\b/.test(msg)) {
@@ -83,6 +106,15 @@ const TESTS = [
   ["list his frontend skills", "SKILLS(frontend)"],
   ["list backend skills", "SKILLS(backend)"],
   ["what are his machine learning skills", "SKILLS(machine_learning)"],
+ 
+  // Round 4 — coding profiles (LeetCode/GfG/CodeChef)
+  ["what's his codechef rating", "CODING(codechef,rating)"],
+  ["how many contests has he done", "CODING(all,contests)"],
+  ["show his coding profiles", "CODING(all,overview)"],
+  ["what badges does he have on leetcode", "CODING(leetcode,badges)"],
+  ["how many problems has he solved on codechef", "CODING(codechef,problems)"],
+  ["show his coding page", "CODING(all,overview)"],
+  ["what's his gfg rating", "CODING(gfg,rating)"],
   ["list his key insights about his internship", "INTERNSHIP(concise)"],
  
   // Round 3 — over-matching bugs (rule matched when it should have deferred to the LLM)
@@ -120,4 +152,3 @@ if (fail > 0) {
   console.log("\nFix the regex(es) above before deploying — see DEBUGGING_GUIDE.md.");
   process.exit(1);
 }
- 

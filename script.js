@@ -398,6 +398,61 @@ function initSkills() {
         .catch(err => console.error('Failed to load skills:', err));
 }
  
+ 
+function initCoding() {
+    const container = document.getElementById('codingPlatforms');
+    if (!container) return;
+ 
+    fetch('assistant-data.json', { cache: 'no-store' })
+        .then(res => res.json())
+        .then(data => {
+            const platforms = (data.coding_profiles?.platforms || []).filter(p => p.active !== false);
+ 
+            if (!platforms.length) {
+                container.innerHTML = `<p class="coding-empty">No coding profiles added yet.</p>`;
+                return;
+            }
+ 
+            container.innerHTML = platforms.map(p => `
+                <div class="coding-platform-card">
+                    <div class="coding-platform-header">
+                        ${p.icon ? `<img src="${p.icon}" alt="${escapeHtml(p.name)}" class="coding-platform-icon">` : ''}
+                        <h3>${escapeHtml(p.name)}</h3>
+                        ${p.username ? `<span class="coding-username">@${escapeHtml(p.username)}</span>` : ''}
+                    </div>
+ 
+                    <div class="coding-stat-grid">
+                        <div class="coding-stat">
+                            <span class="coding-stat-value">${p.problems_solved ?? '—'}</span>
+                            <span class="coding-stat-label">Problems Solved</span>
+                        </div>
+                        <div class="coding-stat">
+                            <span class="coding-stat-value">${p.contests_participated ?? '—'}</span>
+                            <span class="coding-stat-label">Contests</span>
+                        </div>
+                        ${p.rating != null ? `
+                        <div class="coding-stat">
+                            <span class="coding-stat-value">${p.rating}</span>
+                            <span class="coding-stat-label">Rating${p.stars ? ` (${p.stars}★)` : ''}</span>
+                        </div>` : ''}
+                    </div>
+ 
+                    ${p.badges && p.badges.length ? `
+                    <div class="coding-badges">
+                        ${p.badges.map(b => `<span class="tag">${escapeHtml(b)}</span>`).join('')}
+                    </div>` : ''}
+ 
+                    ${p.profile_url ? `<a href="${escapeHtml(p.profile_url)}" target="_blank" class="cert-link">View Profile ↗</a>` : ''}
+                </div>
+            `).join('');
+        })
+        .catch(err => {
+            console.error('Failed to load coding profiles:', err);
+            container.innerHTML = `<p class="coding-empty">Couldn't load coding stats right now.</p>`;
+        });
+}
+ 
+
 function initCertifications() {
     const container = document.getElementById('certificationsContainer');
     if (!container) return;
@@ -431,4 +486,5 @@ document.addEventListener('DOMContentLoaded', () => {
     initPosts();
     initCertifications();
     initSkills();
+    initCoding();
 });

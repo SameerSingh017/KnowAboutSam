@@ -173,35 +173,32 @@
     return `
       <p><strong>${escapeHtml(name)}</strong> — ${escapeHtml(status)}, based in ${escapeHtml(location)}.</p>
       <p>${bio.map(escapeHtml).join(" ")}</p>
-      <p class="priv-hint">Ask me about his <strong>AWS internship</strong>, <strong>skills</strong>, <strong>projects</strong>, or <strong>DSA progress</strong>.</p>
+      <p class="priv-hint">Ask me about his <strong>AWS internship</strong>, <strong>skills</strong>, <strong>projects</strong>, <strong>DSA progress</strong>, or <strong>coding profiles</strong>.</p>
     `;
   }
  
- function buildInternshipAnswer(concise) {
-  const i = KB.internship;
-  if (concise) {
-    const shortPoints = i.highlights.map(h => h.split(" — ")[0]);
+  function buildInternshipAnswer(concise) {
+    const i = KB.internship;
+    if (concise) {
+      const shortPoints = i.highlights.map(h => h.split(" — ")[0]);
+      return `
+        <p><strong>${escapeHtml(i.title)}</strong> — key takeaways:</p>
+        <ul class="priv-list">
+          ${shortPoints.map(p => `<li><strong>${escapeHtml(p)}</strong></li>`).join("")}
+        </ul>
+        <p class="priv-tags">${i.tools.map(t => `<span class="priv-tag">${escapeHtml(t)}</span>`).join("")}</p>
+        <p class="priv-hint">Ask for "internship details" for the full breakdown.</p>
+      `;
+    }
     return `
-      <p><strong>${escapeHtml(i.title)}</strong> (${escapeHtml(i.duration)}) — key takeaways:</p>
+      <p><strong>${escapeHtml(i.title)}</strong><br><span class="priv-muted">${escapeHtml(i.organization)}</span></p>
+      <p>${escapeHtml(i.summary)}</p>
       <ul class="priv-list">
-        ${shortPoints.map(p => `<li><strong>${escapeHtml(p)}</strong></li>`).join("")}
+        ${i.highlights.map(h => `<li>${escapeHtml(h)}</li>`).join("")}
       </ul>
       <p class="priv-tags">${i.tools.map(t => `<span class="priv-tag">${escapeHtml(t)}</span>`).join("")}</p>
-      <p class="priv-hint">Ask for "internship details" for the full breakdown.</p>
     `;
   }
-  return `
-    <p>
-      <strong>${escapeHtml(i.title)}</strong><br>
-      <span class="priv-muted">${escapeHtml(i.organization)} · ${escapeHtml(i.duration)}</span>
-    </p>
-    <p>${escapeHtml(i.summary)}</p>
-    <ul class="priv-list">
-      ${i.highlights.map(h => `<li>${escapeHtml(h)}</li>`).join("")}
-    </ul>
-    <p class="priv-tags">${i.tools.map(t => `<span class="priv-tag">${escapeHtml(t)}</span>`).join("")}</p>
-  `;
-}
  
   function extractSkillCategory(msg) {
     if (/\bfront[\s-]?end\b/.test(msg)) return "frontend";
@@ -209,7 +206,6 @@
     if (/\bmachine learning\b|\bml\b|\bai\b/.test(msg)) return "machine_learning";
     if (/\bdatabase(s)?\b/.test(msg)) return "database";
     if (/\bcloud\b/.test(msg)) return "clodep";
-    if (/\bdeployment\b/.test(msg)) return "clodep";
     if (/\bsoft skills?\b/.test(msg)) return "soft";
     if (/\btools?\b/.test(msg)) return "tools";
     return null;
@@ -226,7 +222,7 @@
     if (category === "backend") return `<p>Sameer's backend skills:</p>${tagsHtml(s.backend)}`;
     if (category === "machine_learning") return `<p>Sameer's machine learning skills:</p>${tagsHtml(s.machine_learning)}`;
     if (category === "database") return `<p>Sameer's database skills:</p>${tagsHtml(s.databases)}`;
-    if (category === "clodep") return `<p>Sameer's cloud and deployment skills:</p>${tagsHtml(s.clodep)}`;
+    if (category === "clodep") return `<p>Sameer's cloud & deployment skills:</p>${tagsHtml(s.clodep)}`;
     if (category === "soft") return `<p>Sameer's soft skills:</p>${tagsHtml(s.soft_skills)}`;
     if (category === "tools") return `<p>Sameer's tools:</p>${tagsHtml(s.tools)}`;
  
@@ -323,6 +319,75 @@
     `;
   }
  
+  const CODING_TRIGGER =
+    /\bcodechef\b|\brating\b|\bcontest(s)?\b|\bbadges?\b|\bcoding profile(s)?\b|\bcompetitive programming profile(s)?\b|\bcoding stats?\b|\bcoding page\b/;
+ 
+  function extractCodingPlatform(msg) {
+    if (/\bleetcode\b/.test(msg)) return "LeetCode";
+    if (/\bgfg\b|\bgeeksforgeeks\b/.test(msg)) return "GeeksforGeeks";
+    if (/\bcodechef\b/.test(msg)) return "CodeChef";
+    return null;
+  }
+ 
+  function extractCodingStat(msg) {
+    if (/\brating\b/.test(msg)) return "rating";
+    if (/\bcontest(s)?\b/.test(msg)) return "contests";
+    if (/\bbadges?\b/.test(msg)) return "badges";
+    if (/\bproblems?( solved)?\b/.test(msg)) return "problems";
+    return null;
+  }
+ 
+  function buildCodingAnswer(platform, stat) {
+    const profiles = (KB.coding_profiles && KB.coding_profiles.platforms) || [];
+    const active = profiles.filter(p => p.active !== false);
+ 
+    function statValue(p, st) {
+      if (st === "rating") return p.rating != null ? `${p.rating}${p.stars ? ` (${p.stars}★)` : ""}` : "not tracked yet";
+      if (st === "contests") return `${p.contests_participated ?? 0}`;
+      if (st === "badges") return `${(p.badges && p.badges.length) || 0}`;
+      return `${p.problems_solved ?? 0}`;
+    }
+ 
+    if (platform) {
+      const p = active.find(x => x.name === platform);
+      if (!p) return `<p>I don't have Sameer's ${escapeHtml(platform)} stats handy right now.</p>`;
+ 
+      if (stat === "badges") {
+        return p.badges && p.badges.length
+          ? `<p>Sameer's ${escapeHtml(platform)} badges:</p>${tagsHtml(p.badges)}`
+          : `<p>No ${escapeHtml(platform)} badges listed yet.</p>`;
+      }
+      if (stat) {
+        const label = stat === "problems" ? "problems solved" : stat;
+        return `<p>Sameer's ${escapeHtml(platform)} ${label}: <strong>${statValue(p, stat)}</strong></p>`;
+      }
+ 
+      return `
+        <p><strong>${escapeHtml(p.name)}</strong>${p.username ? ` — @${escapeHtml(p.username)}` : ""}</p>
+        <p>${p.problems_solved ?? 0} problems solved · ${p.contests_participated ?? 0} contests${p.rating != null ? ` · rating ${p.rating}${p.stars ? ` (${p.stars}★)` : ""}` : ""}</p>
+        ${p.badges && p.badges.length ? tagsHtml(p.badges) : ""}
+        ${p.profile_url ? `<p class="priv-hint"><a href="${escapeHtml(p.profile_url)}" target="_blank" rel="noopener">View profile →</a></p>` : ""}
+      `;
+    }
+ 
+    if (stat) {
+      const rows = active
+        .map(p => `<div class="priv-dsa-row"><span>${escapeHtml(p.name)}</span><span class="priv-dsa-count">${statValue(p, stat)}</span></div>`)
+        .join("");
+      const label = stat === "problems" ? "problems solved" : stat;
+      return `<p>Sameer's ${label} across platforms:</p><div class="priv-dsa-grid">${rows}</div>`;
+    }
+ 
+    const rows = active
+      .map(p => `<div class="priv-dsa-row"><span>${escapeHtml(p.name)}</span><span class="priv-dsa-count">${p.problems_solved ?? 0}</span></div>`)
+      .join("");
+    return `
+      <p>Sameer's competitive programming profiles:</p>
+      <div class="priv-dsa-grid">${rows}</div>
+      <p class="priv-hint">Full breakdown, contests, and badges are on the <a href="coding.html">Coding page</a>.</p>
+    `;
+  }
+ 
   function buildDsaAnswer() {
     const d = KB.dsa_progress;
     const topicsHtml = Object.entries(d.topics)
@@ -415,7 +480,7 @@
   function buildOffTopicAnswer() {
     return `
       <p>That's outside what I know — I only have Sameer's professional/portfolio info, not personal details like that.</p>
-      <p class="priv-hint">Try asking about his <strong>background</strong>, <strong>AWS internship</strong>, <strong>skills</strong>, <strong>projects</strong>, <strong>DSA progress</strong>, <strong>posts</strong>, <strong>thoughts</strong>, or how to <strong>contact</strong> him.</p>
+      <p class="priv-hint">Try asking about his <strong>background</strong>, <strong>AWS internship</strong>, <strong>skills</strong>, <strong>projects</strong>, <strong>DSA progress</strong>, <strong>coding profiles</strong>, <strong>posts</strong>, <strong>thoughts</strong>, or how to <strong>contact</strong> him.</p>
     `;
   }
  
@@ -441,6 +506,7 @@
       "What are his skills?",
       "Show Java projects",
       "Show DSA progress",
+      "What's his CodeChef rating?",
       "How do I contact him?"
     ];
     return chips.map(c => `<button class="priv-chip" data-q="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join("");
@@ -459,6 +525,9 @@
       return buildOffTopicAnswer();
     }
  
+    if (CODING_TRIGGER.test(msg)) {
+      return buildCodingAnswer(extractCodingPlatform(msg), extractCodingStat(msg));
+    }
     if (/\b(dsa|leetcode|gfg|geeksforgeeks|data structures?|problems? solved|competitive programming)\b/.test(msg)) {
       return buildDsaAnswer();
     }

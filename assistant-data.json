@@ -193,6 +193,46 @@
       "featured": true
     }
   ],
+  "coding_profiles": {
+    "_instructions": "Updated MANUALLY whenever stats change on any platform. Edit numbers/badges directly — no code changes needed. Set 'active': false to hide a platform card without deleting its data.",
+    "last_updated": "July 2026",
+    "platforms": [
+      {
+        "name": "LeetCode",
+        "active": true,
+        "username": "SameerSingh17",
+        "profile_url": "https://leetcode.com/u/SameerSingh17/",
+        "problems_solved": 302,
+        "contests_participated": 2,
+        "rating": null,
+        "badges": ["50 Days Badge","100 Days Badge"],
+        "icon": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/leetcode/leetcode-original.svg"
+      },
+      {
+        "name": "GeeksforGeeks",
+        "active": true,
+        "username": "sameer05bv5t",
+        "profile_url": "Phttps://www.geeksforgeeks.org/profile/sameer05bv5t",
+        "problems_solved": 16,
+        "contests_participated": 0,
+        "rating": null,
+        "badges": [],
+        "icon": "https://media.geeksforgeeks.org/wp-content/uploads/20230403183704/gfg_logo.png"
+      },
+      {
+        "name": "CodeChef",
+        "active": true,
+        "username": "sameer_singh17",
+        "profile_url": "https://www.codechef.com/users/sameer_singh17",
+        "problems_solved": 38,
+        "contests_participated": 0,
+        "rating": null,
+        "stars": null,
+        "badges": [],
+        "icon": "https://tse1.mm.bing.net/th/id/OIP.aIm5A-OcQbGUOFiSH5fa4wHaEY?r=0&rs=1&pid=ImgDetMain&o=7&rm=3"
+      }
+    ]
+  },
   "dsa_progress": {
     "_instructions": "This section is updated MANUALLY. Edit the numbers below whenever your solve count changes — see SETUP_GUIDE.md, section 'Updating DSA Progress'. No code changes needed, just numbers.",
     "last_updated": "July 2026",

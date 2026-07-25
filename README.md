@@ -1,7 +1,8 @@
 # Sameer Singh — Personal Portfolio
  
 A hand-crafted personal portfolio website built with pure HTML, CSS, and JavaScript. No frameworks, no frontend build tools — just clean, fast, and responsive web pages. Thoughts and Posts are powered by Firebase Firestore, making them live and visible to all visitors in real time. All writes are handled by a small Cloudflare Worker backend, so nothing sensitive — passwords, keys, or credentials — ever ships to the browser.
- 
+
+ ### Live Link - https://knowaboutsam.netlify.app/ 
 ---
  
 ## Pages

@@ -12,6 +12,7 @@ A hand-crafted personal portfolio website built with pure HTML, CSS, and JavaScr
 | Home | `index.html` | Hero section with intro, tagline, and about snapshot |
 | About | `about.html` | Bio, education, experience, **skills**, and **certifications** — both rendered dynamically |
 | Projects | `projects.html` | Showcase of selected work |
+| Coding | `coding.html` | Displays competitive programming profiles |
 | Thoughts | `thoughts.html` | Long-form essays and reflections (Firebase-powered) |
 | Posts | `posts.html` | Short microblog-style entries (Firebase-powered) |
 | Contact | `contact.html` | Email, LinkedIn, and Telegram links |

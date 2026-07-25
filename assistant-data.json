@@ -12,7 +12,6 @@
     "Passionate about problem-solving, with consistent practice on coding platforms.",
     "Also an aspiring author, currently working on a novel centered around self-discovery and philosophy."
   ],
-
   "education": [
     {
       "degree": "B.Tech — Computer Science & Engineering",
@@ -33,7 +32,6 @@
       "score": "75%"
     }
   ],
-
   "internship": {
     "title": "Data Engineering Virtual Internship",
     "organization": "AWS Academy · via EduSkills",
@@ -44,23 +42,106 @@
       "Cloud Networking — VPC architecture, routing, secure service communication, subnetting and supernetting for IP allocation and traffic control.",
       "IAM & Access Control — implemented Identity and Access Management to enforce secure authentication and role-based authorisation across cloud services."
     ],
-    "tools": ["Amazon S3", "Amazon EC2", "AWS Lambda", "Amazon RDS", "IAM", "VPC", "AWS Cloud Foundations"]
+    "tools": [
+      "Amazon S3",
+      "Amazon EC2",
+      "AWS Lambda",
+      "Amazon RDS",
+      "IAM",
+      "VPC",
+      "AWS Cloud Foundations"
+    ]
   },
-
+  "certifications": [
+    {
+      "name": "AWS Academy Cloud Foundations",
+      "issuer": "AWS Academy",
+      "date": "2025",
+      "url": "https://drive.google.com/file/d/1o3tLTzGzvCwqcsJvUmKQatahqcWWeQLd/view?usp=drive_link"
+    },
+    {
+      "name": "AWS Academy Data Engineering",
+      "issuer": "AWS Academy · via EduSkills",
+      "date": "2025",
+      "url": "https://drive.google.com/file/d/1Tk7h9uwP405m-vNqqGxylJWv6TLe2OjG/view?usp=drive_link"
+    },
+    {
+      "name": "Data Analytics Job Simulation",
+      "issuer": "Deloitte · via Forage",
+      "date": "2025",
+      "url": "https://drive.google.com/file/d/11rrSw3Tj4SBr-y80GTb3qZeUbke5UKQd/view?usp=drive_link"
+    },
+    {
+      "name": "Solutions Architecture Job Simulation",
+      "issuer": "AWS · via Forage",
+      "date": "2025",
+      "url": "https://drive.google.com/file/d/1bBgGzHACijMsA6chX3Dhd4BxFXCBCb-1/view?usp=drive_link"
+    },
+    {
+      "name": "Database Design",
+      "issuer": "Oracle Academy",
+      "date": "2024",
+      "url": "https://drive.google.com/file/d/1mvqw1tVW-cJvfkNf1Rx8U7Nf__CU9_P3/view?usp=drive_link"
+    }
+  ],
   "skills": {
-    "languages": ["Java", "Python (Basic)", "HTML", "CSS", "JavaScript", "SQL"],
-    "frameworks": ["React", "Tailwind CSS", "Jakarta EE"],
-    "databases": ["MySQL"],
-    "cloud": ["AWS (S3, EC2, IAM)", "Netlify"],
-    "tools": ["Git", "VS Code", "MySQL Workbench", "Microsoft Excel", "Apache Tomcat", "Tableau"],
-    "soft_skills": ["Teamwork", "Communication", "Problem Solving", "Adaptability"]
+    "languages": [
+      "Java",
+      "Python",
+      "SQL"
+    ],
+    "machine_learning": [
+      "TensorFlow",
+      "Keras",
+      "EfficientNetB0",
+      "OpenCV",
+      "NumPy"
+    ],
+    "frontend": [
+      "React",
+      "CSS",
+      "HTML",
+      "JavaScript"
+    ],
+    "backend": [
+      "FastAPI",
+      "Servlets",
+      "JSP",
+      "JDBC"
+    ],
+    "databases": [
+      "MongoDB",
+      "MySQL"
+    ],
+    "clodep": [
+      "AWS (S3, EC2, IAM)",
+      "Netlify",
+      "Vercel",
+      "Render"
+    ],
+    "tools": [
+      "Git",
+      "GitHub",
+      "VS Code",
+      "MySQL Workbench",
+      "Tableau"
+    ],
+    "soft_skills": [
+      "Problem Solving",
+      "Teamwork",
+      "Adaptability",
+      "Time Management"
+    ]
   },
-
   "projects": [
     {
       "name": "ElementalUI",
       "description": "A visually engaging and fully searchable periodic table. Click any element to view detailed properties, filter by category, and explore the building blocks of matter.",
-      "tags": ["HTML", "CSS", "JavaScript"],
+      "tags": [
+        "HTML",
+        "CSS",
+        "JavaScript"
+      ],
       "github": "https://github.com/SameerSingh017/periodic_table",
       "deployment": "Frontend → Netlify",
       "featured": false
@@ -68,7 +149,12 @@
     {
       "name": "Library Management System",
       "description": "A terminal and MySQL Workbench based system to manage library operations — book records, reader records, employee records, issuing and returning books, view issue history — built with JDBC connectivity.",
-      "tags": ["Java", "JDBC", "MySQL", "MySQL Workbench"],
+      "tags": [
+        "Java",
+        "JDBC",
+        "MySQL",
+        "MySQL Workbench"
+      ],
       "github": "https://github.com/SameerSingh017/Library-DB",
       "deployment": null,
       "featured": false
@@ -76,22 +162,36 @@
     {
       "name": "Bibliogram",
       "description": "A full-stack Library Management System with role-based authentication for Admin, Member, and Reader. Features book catalog management, issue/return workflows with automated fine calculation, and separate dashboards per role.",
-      "tags": ["Java", "Servlets", "JDBC", "MySQL", "HTML", "CSS", "JavaScript", "Maven", "Tomcat 11"],
+      "tags": [
+        "Java",
+        "Servlets",
+        "JDBC",
+        "MySQL",
+        "HTML",
+        "CSS",
+        "JavaScript",
+        "Maven",
+        "Tomcat 11"
+      ],
       "github": "https://github.com/SameerSingh017/Bibliogram",
       "deployment": "Local · Apache Tomcat 11, DB · MySQL Workbench",
       "featured": true
-    }
-    ,
+    },
     {
       "name": "LeafScan",
       "description": "A crop disease detection and fertilizer recommendation system. Farmers upload a leaf photo, a fine-tuned EfficientNetB0 model identifies the disease, and a rule-based engine returns fertilizer, fungicide, organic alternatives, and recovery time — with full detection history saved per user.",
-      "tags": ["React", "Tailwind CSS", "FastAPI", "TensorFlow", "MongoDB"],
+      "tags": [
+        "React",
+        "Tailwind CSS",
+        "FastAPI",
+        "TensorFlow",
+        "MongoDB"
+      ],
       "github": "https://github.com/sameersingh187/LeafScan",
       "deployment": "Frontend → Vercel, Backend → Render, DB → MongoDB Atlas",
       "featured": true
-}
+    }
   ],
-
   "dsa_progress": {
     "_instructions": "This section is updated MANUALLY. Edit the numbers below whenever your solve count changes — see SETUP_GUIDE.md, section 'Updating DSA Progress'. No code changes needed, just numbers.",
     "last_updated": "July 2026",
@@ -111,17 +211,31 @@
       "Sorting & Searching": 39
     }
   },
-
-"seed_posts": [
-    { "tag": "Dev", "date": "May 2026", "body": "Stopped overwhelming myself with learning too many tech stacks. Now I tend be skilled at whatever stack I'm comfortable with." },
-    { "tag": "Life", "date": "Apr 2026", "body": "To see what's in front of ones's nose requires a constant struggle - George Orwell" },
-    { "tag": "Reading", "date": "Apr 2026", "body": "Started writing my novel again after a two-month gap. Turns out the characters were just waiting — they hadn't gone anywhere." }
+  "seed_posts": [
+    {
+      "tag": "Dev",
+      "date": "May 2026",
+      "body": "Stopped overwhelming myself with learning too many tech stacks. Now I tend be skilled at whatever stack I'm comfortable with."
+    },
+    {
+      "tag": "Life",
+      "date": "Apr 2026",
+      "body": "To see what's in front of ones's nose requires a constant struggle - George Orwell"
+    },
+    {
+      "tag": "Reading",
+      "date": "Apr 2026",
+      "body": "Started writing my novel again after a two-month gap. Turns out the characters were just waiting — they hadn't gone anywhere."
+    }
   ],
-
   "seed_thoughts": [
-    { "title": "The Quiet Cost of Always Being Productive", "subtitle": "On why doing nothing might be the most honest thing you can do.", "tag": "Philosophy", "date": "May 2026" }
+    {
+      "title": "The Quiet Cost of Always Being Productive",
+      "subtitle": "On why doing nothing might be the most honest thing you can do.",
+      "tag": "Philosophy",
+      "date": "May 2026"
+    }
   ],
-
   "contact": {
     "email": "sameer0555singh@gmail.com",
     "linkedin": "https://linkedin.com/in/sameer-singh-004a9929a",

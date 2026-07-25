@@ -5,15 +5,15 @@
        <script src="assistant.js" defer></script>
    right before </body> on every page.
    ========================================================= */
-
+ 
 (function () {
   "use strict";
-
+ 
   const DATA_URL = "assistant-data.json";
   const GITHUB_USER = "SameerSingh017";
   const GITHUB_CACHE_KEY = "priv_github_cache_v1";
   const GITHUB_CACHE_TTL = 10 * 60 * 1000; // 10 minutes
-
+ 
   // Same public Firebase config already used in script.js — safe to reuse,
   // it's a client-side key scoped to this project with public-read rules.
   const FIREBASE_CONFIG = {
@@ -24,11 +24,11 @@
     messagingSenderId: "324249076457",
     appId: "1:324249076457:web:8d1f9ac232f086a1cc6678"
   };
-
+ 
   // Cloudflare Worker that answers questions the rule-based matcher can't —
   // see FREE_LLM_UPGRADE.md and private-llm-worker/ for how this is deployed.
   const LLM_ENDPOINT = "https://private-llm-worker.askprivate.workers.dev";
-
+ 
   function markdownToHtml(text) {
     // The LLM sometimes returns **bold**/*italic* markdown — convert the
     // common cases to real tags. Input is already HTML-escaped by the caller,
@@ -37,7 +37,7 @@
       .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
       .replace(/\*(.+?)\*/g, "<em>$1</em>");
   }
-
+ 
   async function askLLM(question) {
     try {
       const res = await fetch(LLM_ENDPOINT, {
@@ -54,37 +54,37 @@
       return null; // fails silently — caller falls back to the rule-based message
     }
   }
-
+ 
   let KB = null; // knowledge base, loaded from assistant-data.json
   let firestoreDb = null; // lazily initialized, only if posts/thoughts are asked about
-
+ 
   // Topics that are NOT covered by the knowledge base at all — asking about
   // these should never be guessed at from the bio text, just declined clearly.
   const OFF_TOPIC_PATTERN =
     /\b(girlfriend|boyfriend|wife|husband|dating|relationship status|married|siblings?|brother|sister|religion|caste|political|salary|income|net worth|weight|height|book(s)? (is|are) (he|sameer) reading|currently reading)\b/;
-
+ 
   /* ---------------- utilities ---------------- */
-
+ 
   function escapeHtml(str) {
     const div = document.createElement("div");
     div.appendChild(document.createTextNode(String(str)));
     return div.innerHTML;
   }
-
+ 
   function el(tag, className, html) {
     const e = document.createElement(tag);
     if (className) e.className = className;
     if (html !== undefined) e.innerHTML = html;
     return e;
   }
-
+ 
   async function loadKB() {
     if (KB) return KB;
     const res = await fetch(DATA_URL, { cache: "no-store" });
     KB = await res.json();
     return KB;
   }
-
+ 
   async function fetchGithubRepos() {
     try {
       const cached = sessionStorage.getItem(GITHUB_CACHE_KEY);
@@ -93,7 +93,7 @@
         if (Date.now() - parsed.ts < GITHUB_CACHE_TTL) return parsed.repos;
       }
     } catch (e) { /* ignore cache errors */ }
-
+ 
     try {
       const res = await fetch(
         `https://api.github.com/users/${GITHUB_USER}/repos?sort=updated&per_page=100`
@@ -115,7 +115,7 @@
       return []; // offline / rate-limited — fail silently, curated data still works
     }
   }
-
+ 
   async function getFirestoreDb() {
     if (firestoreDb) return firestoreDb;
     const { initializeApp } = await import("https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js");
@@ -124,7 +124,7 @@
     firestoreDb = getFirestore(app);
     return firestoreDb;
   }
-
+ 
   async function fetchFirestoreEntries(collectionName, limitCount) {
     try {
       const db = await getFirestoreDb();
@@ -139,9 +139,9 @@
       return null; // null = fetch failed, distinct from [] = genuinely empty
     }
   }
-
+ 
   /* ---------------- language keyword map ---------------- */
-
+ 
   const LANGUAGE_ALIASES = {
     java: "Java",
     python: "Python",
@@ -157,7 +157,7 @@
     aws: "AWS",
     tailwind: "Tailwind CSS"
   };
-
+ 
   function extractLanguage(msg) {
     for (const key of Object.keys(LANGUAGE_ALIASES)) {
       const re = new RegExp(`\\b${key.replace(".", "\\.")}\\b`, "i");
@@ -165,9 +165,9 @@
     }
     return null;
   }
-
+ 
   /* ---------------- answer builders ---------------- */
-
+ 
   function buildAboutAnswer() {
     const { name, status, location, bio } = KB;
     return `
@@ -176,7 +176,7 @@
       <p class="priv-hint">Ask me about his <strong>AWS internship</strong>, <strong>skills</strong>, <strong>projects</strong>, or <strong>DSA progress</strong>.</p>
     `;
   }
-
+ 
   function buildInternshipAnswer(concise) {
     const i = KB.internship;
     if (concise) {
@@ -199,40 +199,31 @@
       <p class="priv-tags">${i.tools.map(t => `<span class="priv-tag">${escapeHtml(t)}</span>`).join("")}</p>
     `;
   }
-
-  const FRONTEND_SKILLS = new Set(["HTML", "CSS", "JavaScript", "React", "Tailwind CSS"]);
-  const BACKEND_SKILLS = new Set(["Java", "Python (Basic)", "SQL", "MySQL", "Jakarta EE"]);
-
+ 
   function extractSkillCategory(msg) {
     if (/\bfront[\s-]?end\b/.test(msg)) return "frontend";
     if (/\bback[\s-]?end\b/.test(msg)) return "backend";
+    if (/\bmachine learning\b|\bml\b|\bai\b/.test(msg)) return "machine_learning";
     if (/\bdatabase(s)?\b/.test(msg)) return "database";
-    if (/\bcloud\b/.test(msg)) return "cloud";
     if (/\bsoft skills?\b/.test(msg)) return "soft";
     if (/\btools?\b/.test(msg)) return "tools";
     return null;
   }
-
+ 
   function tagsHtml(arr) {
     return `<p class="priv-tags">${arr.map(t => `<span class="priv-tag">${escapeHtml(t)}</span>`).join("")}</p>`;
   }
-
+ 
   function buildSkillsAnswer(language, category) {
     const s = KB.skills;
-
-    if (category === "frontend" || category === "backend") {
-      const set = category === "frontend" ? FRONTEND_SKILLS : BACKEND_SKILLS;
-      const matched = [];
-      Object.values(s).forEach(arr => arr.forEach(item => { if (set.has(item) && !matched.includes(item)) matched.push(item); }));
-      if (matched.length) {
-        return `<p>Sameer's ${category} skills:</p>${tagsHtml(matched)}`;
-      }
-    }
+ 
+    if (category === "frontend") return `<p>Sameer's frontend skills:</p>${tagsHtml(s.frontend)}`;
+    if (category === "backend") return `<p>Sameer's backend skills:</p>${tagsHtml(s.backend)}`;
+    if (category === "machine_learning") return `<p>Sameer's machine learning skills:</p>${tagsHtml(s.machine_learning)}`;
     if (category === "database") return `<p>Sameer's database skills:</p>${tagsHtml(s.databases)}`;
-    if (category === "cloud") return `<p>Sameer's cloud & deployment skills:</p>${tagsHtml(s.cloud)}`;
     if (category === "soft") return `<p>Sameer's soft skills:</p>${tagsHtml(s.soft_skills)}`;
     if (category === "tools") return `<p>Sameer's tools:</p>${tagsHtml(s.tools)}`;
-
+ 
     if (language) {
       const found = Object.entries(s).some(([, arr]) =>
         arr.some(item => item.toLowerCase().includes(language.toLowerCase()))
@@ -243,13 +234,14 @@
     }
     return `<p>Here's Sameer's skill set:</p>` + skillGroupsHtml(s);
   }
-
+ 
   function skillGroupsHtml(s) {
     const groups = [
       ["Languages", s.languages],
-      ["Frameworks & Libraries", s.frameworks],
+      ["Machine Learning", s.machine_learning],
+      ["Frontend", s.frontend],
+      ["Backend", s.backend],
       ["Databases", s.databases],
-      ["Cloud & Deployment", s.cloud],
       ["Tools", s.tools],
       ["Soft Skills", s.soft_skills]
     ];
@@ -263,11 +255,11 @@
       )
       .join("");
   }
-
+ 
   async function buildProjectsAnswer(language) {
     let projects = KB.projects;
     let noteExtra = "";
-
+ 
     if (language) {
       const filtered = projects.filter(p =>
         p.tags.some(t => t.toLowerCase().includes(language.toLowerCase()))
@@ -278,9 +270,9 @@
         noteExtra = `<p class="priv-hint">No curated ${escapeHtml(language)} projects listed, showing everything instead.</p>`;
       }
     }
-
+ 
     let cardsHtml = projects.map(projectCardHtml).join("");
-
+ 
     // Supplement with a live GitHub check for repos not featured on the portfolio
     const repos = await fetchGithubRepos();
     if (repos.length && language) {
@@ -304,7 +296,7 @@
           .join("");
       }
     }
-
+ 
     return `
       <p>${language ? `${escapeHtml(language)} projects:` : "Here's what Sameer's built:"}</p>
       ${cardsHtml}
@@ -312,7 +304,7 @@
       <p class="priv-hint">Full source on <a href="${escapeHtml(KB.contact.github)}" target="_blank" rel="noopener">GitHub</a>.</p>
     `;
   }
-
+ 
   function projectCardHtml(p) {
     return `
       <div class="priv-project-card">
@@ -323,7 +315,7 @@
       </div>
     `;
   }
-
+ 
   function buildDsaAnswer() {
     const d = KB.dsa_progress;
     const topicsHtml = Object.entries(d.topics)
@@ -335,7 +327,7 @@
         </div>`
       )
       .join("");
-
+ 
     return `
       <p><strong>${d.total_solved}</strong> problems solved on <strong>${escapeHtml(d.platform)}</strong> as of ${escapeHtml(d.last_updated)}.</p>
       <div class="priv-dsa-grid">${topicsHtml}</div>
@@ -343,7 +335,7 @@
       <p class="priv-hint">Progress updated manually by Sameer.</p>
     `;
   }
-
+ 
   function buildContactAnswer() {
     const c = KB.contact;
     return `
@@ -354,7 +346,7 @@
       <div class="priv-contact-row"><a href="${escapeHtml(c.resume)}" download>⬇ Download Resume</a></div>
     `;
   }
-
+ 
   async function buildPostsAnswer() {
     const live = await fetchFirestoreEntries("posts", 8);
     const seed = KB.seed_posts || [];
@@ -375,7 +367,7 @@
       .join("");
     return `<p>Sameer's latest posts:</p>${itemsHtml}<p class="priv-hint">See all on the <a href="posts.html">Posts page</a>.</p>`;
   }
-
+ 
   async function buildThoughtsAnswer() {
     const live = await fetchFirestoreEntries("thoughts", 5);
     const seed = KB.seed_thoughts || [];
@@ -395,11 +387,11 @@
       .join("");
     return `<p>Sameer's latest thoughts:</p>${itemsHtml}<p class="priv-hint">Read them in full on the <a href="thoughts.html">Thoughts page</a>.</p>`;
   }
-
+ 
   function buildBirthAnswer() {
     return `<p>Sameer was born on <strong>${escapeHtml(KB.born)}</strong>, making him <strong>${escapeHtml(String(KB.age).split(" (")[0])}</strong> years old.</p>`;
   }
-
+ 
   function buildEducationAnswer() {
     const current = KB.education[0]; // most recent / current entry
     return `
@@ -408,18 +400,18 @@
       <p class="priv-hint">Full academic history is on the <a href="about.html">About page</a>.</p>
     `;
   }
-
+ 
   function buildLocationAnswer() {
     return `<p>Sameer is based in <strong>${escapeHtml(KB.location)}</strong>.</p><p class="priv-hint">Ask about his <strong>background</strong>, <strong>skills</strong>, or <strong>projects</strong> for more.</p>`;
   }
-
+ 
   function buildOffTopicAnswer() {
     return `
       <p>That's outside what I know — I only have Sameer's professional/portfolio info, not personal details like that.</p>
       <p class="priv-hint">Try asking about his <strong>background</strong>, <strong>AWS internship</strong>, <strong>skills</strong>, <strong>projects</strong>, <strong>DSA progress</strong>, <strong>posts</strong>, <strong>thoughts</strong>, or how to <strong>contact</strong> him.</p>
     `;
   }
-
+ 
   function buildGreetingAnswer() {
     return `
       <p>Hey! I'm <strong>Private</strong> — Sameer's portfolio assistant. Ask me things like:</p>
@@ -428,13 +420,13 @@
       </div>
     `;
   }
-
+ 
   function buildFallbackAnswer() {
     return `
       <p>I'm not sure about that one. I can tell you about Sameer's <strong>background</strong>, <strong>AWS internship</strong>, <strong>skills</strong>, <strong>projects</strong> (try "show Java projects"), <strong>DSA progress</strong>, his <strong>posts</strong> or <strong>thoughts</strong>, or how to <strong>contact</strong> him.</p>
     `;
   }
-
+ 
   function suggestionChipsHtml() {
     const chips = [
       "Tell me about Sameer",
@@ -446,20 +438,20 @@
     ];
     return chips.map(c => `<button class="priv-chip" data-q="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join("");
   }
-
+ 
   /* ---------------- intent routing ---------------- */
-
+ 
   async function answer(rawMsg) {
     const msg = rawMsg.toLowerCase().trim();
     await loadKB();
-
+ 
     // Off-topic guard runs FIRST — personal-life questions and other things
     // genuinely absent from the data should never fall through to a loosely
     // matched "about" answer that sounds confident but isn't relevant.
     if (OFF_TOPIC_PATTERN.test(msg)) {
       return buildOffTopicAnswer();
     }
-
+ 
     if (/\b(dsa|leetcode|gfg|geeksforgeeks|data structures?|problems? solved|competitive programming)\b/.test(msg)) {
       return buildDsaAnswer();
     }
@@ -511,9 +503,9 @@
     const llmAnswer = await askLLM(rawMsg);
     return llmAnswer || buildFallbackAnswer();
   }
-
+ 
   /* ---------------- UI ---------------- */
-
+ 
   const CSS = `
     .priv-toggle-btn {
       position: fixed; left: 28px; bottom: 28px; z-index: 999;
@@ -623,19 +615,19 @@
       .priv-toggle-btn { left: 12px; bottom: 16px; }
     }
   `;
-
+ 
   function buildUI() {
     const style = el("style");
     style.textContent = CSS;
     document.head.appendChild(style);
-
+ 
     const toggleBtn = el(
       "button",
       "priv-toggle-btn",
       `<span class="priv-dot"></span> Ask Private`
     );
     toggleBtn.setAttribute("aria-label", "Open Private, the AI portfolio assistant");
-
+ 
     const panel = el("div", "priv-panel");
     panel.innerHTML = `
       <div class="priv-header">
@@ -650,17 +642,17 @@
         <button class="priv-send-btn" id="privSend" aria-label="Send">➤</button>
       </div>
     `;
-
+ 
     document.body.appendChild(toggleBtn);
     document.body.appendChild(panel);
-
+ 
     const messagesEl = panel.querySelector("#privMessages");
     const inputEl = panel.querySelector("#privInput");
     const sendBtn = panel.querySelector("#privSend");
     const closeBtn = panel.querySelector(".priv-close-btn");
-
+ 
     let greeted = false;
-
+ 
     function openPanel() {
       panel.classList.add("priv-open");
       if (!greeted) {
@@ -669,29 +661,29 @@
       }
       inputEl.focus();
     }
-
+ 
     function closePanel() {
       panel.classList.remove("priv-open");
     }
-
+ 
     toggleBtn.addEventListener("click", () => {
       panel.classList.contains("priv-open") ? closePanel() : openPanel();
     });
     closeBtn.addEventListener("click", closePanel);
-
+ 
     function appendUserMessage(text) {
       const bubble = el("div", "priv-msg priv-user", escapeHtml(text));
       messagesEl.appendChild(bubble);
       scrollToBottom();
     }
-
+ 
     function appendBotMessage(html) {
       const bubble = el("div", "priv-msg priv-bot", html);
       messagesEl.appendChild(bubble);
       wireChips(bubble);
       scrollToBottom();
     }
-
+ 
     function appendLoading() {
       const bubble = el("div", "priv-msg priv-loading", "Private is thinking…");
       bubble.id = "privLoadingBubble";
@@ -699,17 +691,17 @@
       scrollToBottom();
       return bubble;
     }
-
+ 
     function scrollToBottom() {
       messagesEl.scrollTop = messagesEl.scrollHeight;
     }
-
+ 
     function wireChips(scope) {
       scope.querySelectorAll(".priv-chip").forEach(chip => {
         chip.addEventListener("click", () => handleUserQuery(chip.dataset.q));
       });
     }
-
+ 
     async function handleUserQuery(text) {
       if (!text || !text.trim()) return;
       appendUserMessage(text);
@@ -725,13 +717,13 @@
         console.error("Private assistant error:", e);
       }
     }
-
+ 
     sendBtn.addEventListener("click", () => handleUserQuery(inputEl.value));
     inputEl.addEventListener("keypress", e => {
       if (e.key === "Enter") handleUserQuery(inputEl.value);
     });
   }
-
+ 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", buildUI);
   } else {

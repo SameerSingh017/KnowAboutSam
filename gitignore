@@ -1,0 +1,25 @@
+# --- Node / npm ---
+node_modules/
+**/node_modules/
+
+# --- Cloudflare Wrangler ---
+.wrangler/
+**/.wrangler/
+.dev.vars
+.dev.vars.*
+
+# --- Secrets / env files (none exist yet, but future-proofing) ---
+.env
+.env.local
+.env.*.local
+
+# --- OS / editor cruft ---
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+.idea/
+
+# --- Logs ---
+*.log
+npm-debug.log*

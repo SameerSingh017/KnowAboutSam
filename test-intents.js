@@ -9,13 +9,13 @@
  * edit here, then add a test case for whatever you just fixed. This is
  * what stops you from re-breaking a phrase you already fixed once.
  */
-
+ 
 const OFF_TOPIC_PATTERN =
   /\b(girlfriend|boyfriend|wife|husband|dating|relationship status|married|siblings?|brother|sister|religion|caste|political|salary|income|net worth|weight|height|book(s)? (is|are) (he|sameer) reading|currently reading)\b/;
-
+ 
 function route(msgRaw) {
   const msg = msgRaw.toLowerCase().trim();
-
+ 
   if (OFF_TOPIC_PATTERN.test(msg)) return "OFF_TOPIC";
   if (/\b(dsa|leetcode|gfg|geeksforgeeks|data structures?|problems? solved|competitive programming)\b/.test(msg))
     return "DSA";
@@ -43,7 +43,7 @@ function route(msgRaw) {
     if (/\bfront[\s-]?end\b/.test(msg)) return "SKILLS(frontend)";
     if (/\bback[\s-]?end\b/.test(msg)) return "SKILLS(backend)";
     if (/\bdatabase(s)?\b/.test(msg)) return "SKILLS(database)";
-    if (/\bcloud\b/.test(msg)) return "SKILLS(cloud)";
+    if (/\bmachine learning\b|\bml\b/.test(msg)) return "SKILLS(machine_learning)";
     return "SKILLS";
   }
   if (/\bwhere.*(live|lives|based|from)\b|\blocation\b|\bhometown\b|\bbased in\b/.test(msg)) return "LOCATION";
@@ -56,7 +56,7 @@ function route(msgRaw) {
   if (/\b(hi|hello|hey|yo|sup|greetings)\b/.test(msg)) return "GREETING";
   return "FALLBACK";
 }
-
+ 
 // [phrase, expectedIntent] — every question from every bug report so far.
 // Add new rows here whenever you fix something new.
 const TESTS = [
@@ -72,7 +72,7 @@ const TESTS = [
   ["show java projects", "PROJECTS"],
   ["tell me about his aws internship", "INTERNSHIP(full)"],
   ["what are his skills", "SKILLS"],
-
+ 
   // Round 2
   ["when was sameer born?", "BIRTH"],
   ["how old is sameer?", "BIRTH"],
@@ -82,14 +82,15 @@ const TESTS = [
   ["in which year is he currently in", "EDUCATION"],
   ["list his frontend skills", "SKILLS(frontend)"],
   ["list backend skills", "SKILLS(backend)"],
+  ["what are his machine learning skills", "SKILLS(machine_learning)"],
   ["list his key insights about his internship", "INTERNSHIP(concise)"],
-
+ 
   // Round 3 — over-matching bugs (rule matched when it should have deferred to the LLM)
   ["who is sameer's favourite actor", "FALLBACK"],
   ["where does sameer live", "LOCATION"],
   ["who is sameer", "ABOUT"],
   ["who is sameer's best friend", "FALLBACK"],
-
+ 
   // Sanity checks — things that should NOT be reclassified by future edits
   ["hi", "GREETING"],
   ["hello there", "GREETING"],
@@ -99,12 +100,12 @@ const TESTS = [
   ["show python projects", "PROJECTS"],
   ["what is his cgpa", "EDUCATION"]
 ];
-
+ 
 let pass = 0;
 let fail = 0;
-
+ 
 console.log("Running Private intent regression suite...\n");
-
+ 
 TESTS.forEach(([phrase, expected]) => {
   const actual = route(phrase);
   const ok = actual === expected;
@@ -113,9 +114,10 @@ TESTS.forEach(([phrase, expected]) => {
     `${ok ? "✅ PASS" : "❌ FAIL"}  ${phrase.padEnd(65)} expected=${expected.padEnd(20)} got=${actual}`
   );
 });
-
+ 
 console.log(`\n${pass} passed, ${fail} failed, ${TESTS.length} total.`);
 if (fail > 0) {
   console.log("\nFix the regex(es) above before deploying — see DEBUGGING_GUIDE.md.");
   process.exit(1);
 }
+ 

@@ -31,10 +31,28 @@ function extractCodingStat(msg) {
   return null;
 }
  
+const fs = require("fs");
+const path = require("path");
+const KB = JSON.parse(fs.readFileSync(path.join(__dirname, "assistant-data.json"), "utf8"));
+ 
+function extractProjectName(msg) {
+  const projects = KB.projects || [];
+  const msgNorm = msg.replace(/[^a-z0-9]/gi, "").toLowerCase();
+  for (const p of projects) {
+    const key = p.name.replace(/[^a-z0-9]/gi, "").toLowerCase();
+    if (key && msgNorm.includes(key)) return p;
+  }
+  return null;
+}
+ 
 function route(msgRaw) {
   const msg = msgRaw.toLowerCase().trim();
  
   if (OFF_TOPIC_PATTERN.test(msg)) return "OFF_TOPIC";
+ 
+  const namedProject = extractProjectName(msg);
+  if (namedProject) return `PROJECTS(${namedProject.name})`;
+ 
   if (CODING_TRIGGER.test(msg)) {
     const platform = extractCodingPlatform(msg);
     const stat = extractCodingStat(msg);
@@ -43,7 +61,9 @@ function route(msgRaw) {
   if (/\b(dsa|leetcode|gfg|geeksforgeeks|data structures?|problems? solved|competitive programming)\b/.test(msg))
     return "DSA";
   if (/\b(intern(ship)?|aws academy|eduskills|data engineering)\b/.test(msg)) {
+    const durationOnly = /\bduration\b|\bhow long\b|\bwhen (was|did)\b.*\bintern/.test(msg);
     const concise = /\b(key insight|insights|summary|briefly|short|takeaways?|highlights?)\b/.test(msg);
+    if (durationOnly) return "INTERNSHIP(duration)";
     return concise ? "INTERNSHIP(concise)" : "INTERNSHIP(full)";
   }
   if (/\b(born|birthday|birth date|dob|how old|age)\b/.test(msg)) return "BIRTH";
@@ -71,7 +91,7 @@ function route(msgRaw) {
   }
   if (/\bwhere.*(live|lives|based|from)\b|\blocation\b|\bhometown\b|\bbased in\b/.test(msg)) return "LOCATION";
   if (
-    /\b(about|who is sameer(?!'s)|who are you|bio|background|tell me about sameer|what does (he|sameer) do|profession|occupation|current role|what is his job)\b/.test(
+    /\b(about (sameer|him)\b|who is sameer(?!'s)|who are you|\bbio\b|background|tell me about sameer|what does (he|sameer) do|profession|occupation|current role|what is his job)\b/.test(
       msg
     )
   )
@@ -116,6 +136,13 @@ const TESTS = [
   ["show his coding page", "CODING(all,overview)"],
   ["what's his gfg rating", "CODING(gfg,rating)"],
   ["list his key insights about his internship", "INTERNSHIP(concise)"],
+ 
+  // Round 5 — real bugs found from live screenshots (2026-07-26)
+  ["tell me about his leafscan work", "PROJECTS(LeafScan)"],
+  ["tell me about his leafscan project", "PROJECTS(LeafScan)"],
+  ["list his aws internship duration", "INTERNSHIP(duration)"],
+  ["how long was his internship", "INTERNSHIP(duration)"],
+  ["about reading", "FALLBACK"],
  
   // Round 3 — over-matching bugs (rule matched when it should have deferred to the LLM)
   ["who is sameer's favourite actor", "FALLBACK"],

@@ -158,6 +158,16 @@
     tailwind: "Tailwind CSS"
   };
  
+  function extractProjectName(msg) {
+    const projects = KB.projects || [];
+    const msgNorm = msg.replace(/[^a-z0-9]/gi, "").toLowerCase();
+    for (const p of projects) {
+      const key = p.name.replace(/[^a-z0-9]/gi, "").toLowerCase();
+      if (key && msgNorm.includes(key)) return p;
+    }
+    return null;
+  }
+ 
   function extractLanguage(msg) {
     for (const key of Object.keys(LANGUAGE_ALIASES)) {
       const re = new RegExp(`\\b${key.replace(".", "\\.")}\\b`, "i");
@@ -177,8 +187,11 @@
     `;
   }
  
-  function buildInternshipAnswer(concise) {
+  function buildInternshipAnswer(concise, durationOnly) {
     const i = KB.internship;
+    if (durationOnly) {
+      return `<p>Sameer's ${escapeHtml(i.title)} ran <strong>${escapeHtml(i.duration)}</strong>.</p>`;
+    }
     if (concise) {
       const shortPoints = i.highlights.map(h => h.split(" — ")[0]);
       return `
@@ -205,7 +218,7 @@
     if (/\bback[\s-]?end\b/.test(msg)) return "backend";
     if (/\bmachine learning\b|\bml\b|\bai\b/.test(msg)) return "machine_learning";
     if (/\bdatabase(s)?\b/.test(msg)) return "database";
-    if (/\bcloud\b/.test(msg)) return "clodep";
+    if (/\bcloud\b/.test(msg)) return "cloud";
     if (/\bsoft skills?\b/.test(msg)) return "soft";
     if (/\btools?\b/.test(msg)) return "tools";
     return null;
@@ -222,7 +235,7 @@
     if (category === "backend") return `<p>Sameer's backend skills:</p>${tagsHtml(s.backend)}`;
     if (category === "machine_learning") return `<p>Sameer's machine learning skills:</p>${tagsHtml(s.machine_learning)}`;
     if (category === "database") return `<p>Sameer's database skills:</p>${tagsHtml(s.databases)}`;
-    if (category === "clodep") return `<p>Sameer's cloud & deployment skills:</p>${tagsHtml(s.clodep)}`;
+    if (category === "cloud") return `<p>Sameer's cloud & deployment skills:</p>${tagsHtml(s.clodep)}`;
     if (category === "soft") return `<p>Sameer's soft skills:</p>${tagsHtml(s.soft_skills)}`;
     if (category === "tools") return `<p>Sameer's tools:</p>${tagsHtml(s.tools)}`;
  
@@ -259,7 +272,11 @@
       .join("");
   }
  
-  async function buildProjectsAnswer(language) {
+  async function buildProjectsAnswer(language, specificProject) {
+    if (specificProject) {
+      return `<p>Here's <strong>${escapeHtml(specificProject.name)}</strong>:</p>${projectCardHtml(specificProject)}`;
+    }
+ 
     let projects = KB.projects;
     let noteExtra = "";
  
@@ -419,12 +436,31 @@
     `;
   }
  
-  async function buildPostsAnswer() {
+  function extractPostTagFilter(msg) {
+    const seedTags = (KB.seed_posts || []).map(p => (p.tag || "").toLowerCase()).filter(Boolean);
+    for (const tag of new Set(seedTags)) {
+      if (new RegExp(`\\b${tag}\\b`).test(msg)) return tag;
+    }
+    return null;
+  }
+ 
+  async function buildPostsAnswer(tagFilter) {
     const live = await fetchFirestoreEntries("posts", 8);
     const seed = KB.seed_posts || [];
     // Seeds render first on the actual page (script.js appends live ones after them),
     // so match that order here.
-    const entries = live === null ? seed : [...seed, ...live];
+    let entries = live === null ? seed : [...seed, ...live];
+    let noteExtra = "";
+ 
+    if (tagFilter) {
+      const filtered = entries.filter(p => (p.tag || "").toLowerCase() === tagFilter);
+      if (filtered.length) {
+        entries = filtered;
+      } else {
+        noteExtra = `<p class="priv-hint">No posts tagged "${escapeHtml(tagFilter)}" yet, showing everything instead.</p>`;
+      }
+    }
+ 
     if (entries.length === 0) {
       return `<p>No posts yet — check the <a href="posts.html">Posts page</a> again soon.</p>`;
     }
@@ -437,7 +473,7 @@
         </div>`
       )
       .join("");
-    return `<p>Sameer's latest posts:</p>${itemsHtml}<p class="priv-hint">See all on the <a href="posts.html">Posts page</a>.</p>`;
+    return `<p>Sameer's ${tagFilter ? `posts tagged "${escapeHtml(tagFilter)}"` : "latest posts"}:</p>${itemsHtml}${noteExtra}<p class="priv-hint">See all on the <a href="posts.html">Posts page</a>.</p>`;
   }
  
   async function buildThoughtsAnswer() {
@@ -525,6 +561,14 @@
       return buildOffTopicAnswer();
     }
  
+    // A specific project name (e.g. "leafscan", "bibliogram") mentioned
+    // anywhere in the message should win outright — otherwise generic
+    // catch-alls further down (like the bare "about" match) hijack it.
+    const namedProject = extractProjectName(msg);
+    if (namedProject) {
+      return await buildProjectsAnswer(null, namedProject);
+    }
+ 
     if (CODING_TRIGGER.test(msg)) {
       return buildCodingAnswer(extractCodingPlatform(msg), extractCodingStat(msg));
     }
@@ -532,8 +576,9 @@
       return buildDsaAnswer();
     }
     if (/\b(intern(ship)?|aws academy|eduskills|data engineering)\b/.test(msg)) {
+      const durationOnly = /\bduration\b|\bhow long\b|\bwhen (was|did)\b.*\bintern/.test(msg);
       const concise = /\b(key insight|insights|summary|briefly|short|takeaways?|highlights?)\b/.test(msg);
-      return buildInternshipAnswer(concise);
+      return buildInternshipAnswer(concise, durationOnly);
     }
     if (/\b(born|birthday|birth date|dob|how old|age)\b/.test(msg)) {
       return buildBirthAnswer();
@@ -548,7 +593,7 @@
       return buildContactAnswer();
     }
     if (/\bposts?\b/.test(msg) && !/\bblog post\b/.test(msg)) {
-      return await buildPostsAnswer();
+      return await buildPostsAnswer(extractPostTagFilter(msg));
     }
     if (/\bthoughts?\b|\bessays?\b/.test(msg)) {
       return await buildThoughtsAnswer();
@@ -567,7 +612,7 @@
       return buildLocationAnswer();
     }
     if (
-      /\b(about|who is sameer(?!'s)|who are you|bio|background|tell me about sameer|what does (he|sameer) do|profession|occupation|current role|what is his job)\b/.test(
+      /\b(about (sameer|him)\b|who is sameer(?!'s)|who are you|\bbio\b|background|tell me about sameer|what does (he|sameer) do|profession|occupation|current role|what is his job)\b/.test(
         msg
       )
     ) {

@@ -12,6 +12,7 @@ A hand-crafted personal portfolio website built with pure HTML, CSS, and JavaScr
 | Home | `index.html` | Hero section with intro, tagline, and about snapshot |
 | About | `about.html` | Bio, education, experience, **skills**, and **certifications** — both rendered dynamically |
 | Projects | `projects.html` | Showcase of selected work |
+| Coding | `coding.html` | Displays competitive programming profiles |
 | Thoughts | `thoughts.html` | Long-form essays and reflections (Firebase-powered) |
 | Posts | `posts.html` | Short microblog-style entries (Firebase-powered) |
 | Contact | `contact.html` | Email, LinkedIn, and Telegram links |
@@ -26,6 +27,7 @@ portfolio/
 ├── index.html            # Home page
 ├── about.html             # About page — skills & certifications render dynamically here
 ├── projects.html
+|---coding.html
 ├── thoughts.html            # Thoughts page (Firebase-powered)
 ├── posts.html                 # Posts page (Firebase-powered)
 ├── contact.html
@@ -43,6 +45,7 @@ portfolio/
 │   ├── hero-headshot.png
 │   ├── 1000031928.jpeg
 │   └── ss_resume.pdf
+|   |-- leafscan-screenshot.png
 │
 ├── private-llm-worker/               # Cloudflare Worker — admin auth, Firestore write proxy, LLM fallback
 │   ├── src/index.js

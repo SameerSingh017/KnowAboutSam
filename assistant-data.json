@@ -1,10 +1,10 @@
 {
   "name": "Sameer Singh",
   "github_username": "SameerSingh017",
-  "status": "3rd Year, 6th Semester — B.Tech Computer Science & Engineering @ Galgotias University",
+  "status": "4th Year, 7th Semester — B.Tech Computer Science & Engineering @ Galgotias University",
   "location": "Greater Noida, India",
   "born": "7 February 2006",
-  "age": "20 (as of July 2026 — update yearly in assistant-data.json)",
+  "age": "20 (as of August 2026 — update yearly in assistant-data.json)",
   "profession": "Full-Stack Software Engineering student, building web applications and practicing DSA alongside his degree.",
   "bio": [
     "Driven Full-Stack Software Engineer with a decent foundation in Data Structures and Algorithms.",
@@ -17,7 +17,7 @@
       "degree": "B.Tech — Computer Science & Engineering",
       "institution": "Galgotias University, Greater Noida",
       "duration": "2023 — 2027",
-      "score": "CGPA: 8.2"
+      "score": "CGPA: 8.25"
     },
     {
       "degree": "Senior Secondary (XII) — PCM",

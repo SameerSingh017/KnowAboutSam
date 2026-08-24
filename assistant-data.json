@@ -235,20 +235,20 @@
   },
   "dsa_progress": {
     "_instructions": "This section is updated MANUALLY. Edit the numbers below whenever your solve count changes — see SETUP_GUIDE.md, section 'Updating DSA Progress'. No code changes needed, just numbers.",
-    "last_updated": "July 2026",
-    "total_solved": 302,
+    "last_updated": "August 2026",
+    "total_solved": 312,
     "platform": "LeetCode",
     "profile_url": "https://leetcode.com/u/SameerSingh17/",
     "topics": {
-      "Arrays": 160,
-      "Strings": 68,
+      "Arrays": 161,
+      "Strings": 73,
       "Linked List": 13,
-      "Stacks & Queues": 14,
+      "Stacks & Queues": 19,
       "Trees": 22,
       "Graphs": 41,
       "Dynamic Programming": 32,
       "Recursion & Backtracking": 15,
-      "Greedy": 18,
+      "Greedy": 19,
       "Sorting & Searching": 39
     }
   },
